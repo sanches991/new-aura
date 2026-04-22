@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+<meta name="theme-color" content="#2d5a3d">
+<title>AURA — Fine Dining</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ================== APP SHELL ================== -->
+<div class="app">
+
+  <!-- ================== SIDEBAR (DESKTOP/TABLET) ================== -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-inner">
+      <!-- Logo -->
+      <a href="#" class="logo" aria-label="AURA Fine Dining">
+        <div class="logo-word">AURA</div>
+        <div class="logo-sub">— FINE DINING —</div>
+      </a>
+
+      <!-- Decorative divider -->
+      <div class="nav-sign" aria-hidden="true">
+        <svg viewBox="0 0 40 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round">
+          <path d="M2 12 C 8 4, 14 20, 20 12 S 32 4, 38 12"/>
+        </svg>
+      </div>
+
+      <!-- Category navigation -->
+      <nav class="nav" aria-label="Категории меню">
+        <button class="nav-item is-active" data-category="all">
+          <span class="nav-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+          </span>
+          <span class="nav-label">Все блюда</span>
+        </button>
+
+        <button class="nav-item" data-category="salads">
+          <span class="nav-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11h18a9 9 0 0 1-18 0Z"/><path d="M7 7l1.5-2M12 6V4M16.5 7l1-2"/></svg>
+          </span>
+          <span class="nav-label">Салаты</span>
+        </button>
+
+        <button class="nav-item" data-category="mains">
+          <span class="nav-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/></svg>
+          </span>
+          <span class="nav-label">Основные блюда</span>
+        </button>
+
+        <button class="nav-item" data-category="desserts">
+          <span class="nav-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 13h16l-1.5 7h-13L4 13Z"/><path d="M6 13a6 6 0 0 1 12 0"/><path d="M12 4v3"/></svg>
+          </span>
+          <span class="nav-label">Десерты</span>
+        </button>
+
+        <button class="nav-item" data-category="drinks">
+          <span class="nav-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4h12l-2 9a4 4 0 0 1-4 3 4 4 0 0 1-4-3L6 4Z"/><path d="M12 16v4M9 20h6"/></svg>
+          </span>
+          <span class="nav-label">Напитки</span>
+        </button>
+      </nav>
+      <div class="hours">
+        
+      </div>
+      <!-- Working hours -->
+      <div class="hours">
+        <img src="iconFolder/Icon black.svg" style="color: blackE; width: 40px;margin-bottom: 15px;" alt="">
+        
+        <div class="hours-row">
+          <span class="hours-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+          </span>
+          <div class="hours-text">
+            <div class="hours-label">Часы работы</div>
+            <div class="hours-time">10:00 — 23:00</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ================== MOBILE TOP BAR ================== -->
+  <header class="mobile-bar">
+    <div class="mobile-logo">
+      <div class="logo-word">AURA</div>
+      <div class="logo-sub">— FINE DINING —</div>
+    </div>
+    <button class="mobile-cart-btn" id="mobileCartBtn" aria-label="Корзина">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 7h14l-1.5 11a2 2 0 0 1-2 1.7h-7a2 2 0 0 1-2-1.7L5 7Z"/><path d="M9 7V5a3 3 0 0 1 6 0v2"/></svg>
+      <span class="mobile-cart-badge" id="mobileCartBadge">0</span>
+    </button>
+  </header>
+
+  <!-- ================== MAIN ================== -->
+  <main class="main">
+    <!-- Decorative herb pattern background -->
+    <div class="herbs" aria-hidden="true"></div>
+
+    <div class="main-inner">
+      <!-- Header row: title + cart pill -->
+      <header class="main-head">
+        <div class="title-block">
+          <h1 class="title">Меню</h1>
+          <div class="title-flourish" aria-hidden="true" >
+            <img width="50px" height="30px" src="iconFolder/Icon.svg" alt="">
+            <hr>
+          </div>
+          <p class="subtitle">Изысканные блюда для истинных гурманов</p>
+        </div>
+
+        <button class="cart-pill" id="cartPill" aria-label="Открыть корзину">
+          <span class="cart-pill-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 7h14l-1.5 11a2 2 0 0 1-2 1.7h-7a2 2 0 0 1-2-1.7L5 7Z"/><path d="M9 7V5a3 3 0 0 1 6 0v2"/></svg>
+          </span>
+          <span class="cart-pill-label">Корзина</span>
+          <span class="cart-pill-badge" id="cartPillBadge">0</span>
+        </button>
+      </header>
+
+      <!-- Horizontal category bar (mobile fixed) -->
+      <div class="cat-bar">
+        
+        <nav class="cat-scroll" aria-label="Категории меню">
+          <button class="cat-chip is-active" data-category="all">Все блюда</button>
+          <button class="cat-chip" data-category="salads">Салаты</button>
+          <button class="cat-chip" data-category="mains">Основные блюда</button>
+          <button class="cat-chip" data-category="desserts">Десерты</button>
+          <button class="cat-chip" data-category="drinks">Напитки</button>
+        </nav>
+      </div>
+
+      <!-- Dish grid -->
+      <section class="grid" id="dishGrid">
+        <!-- Dynamic cards injected by JS -->
+      </section>
+    </div>
+  </main>
+</div>
+
+<!-- ================== CART PANEL (HIDDEN BY DEFAULT) ================== -->
+<div class="cart-overlay" id="cartOverlay" aria-hidden="true"></div>
+
+<aside class="cart-panel" id="cartPanel" aria-hidden="true" aria-label="Корзина">
+  <header class="cart-head">
+    <h2 class="cart-title">Корзина</h2>
+    <button class="cart-close" id="cartClose" aria-label="Закрыть корзину">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+  </header>
+
+  <div class="cart-body" id="cartBody">
+    <!-- Dynamic cart items -->
+    <div class="cart-empty" id="cartEmpty">
+      <div class="cart-empty-icon" aria-hidden="true">
+        <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M10 14h28l-3 22a4 4 0 0 1-4 3.4H17a4 4 0 0 1-4-3.4L10 14Z"/><path d="M18 14V10a6 6 0 0 1 12 0v4"/></svg>
+      </div>
+      <p>Корзина пока пуста</p>
+      <span>Добавьте блюда из меню</span>
+    </div>
+  </div>
+
+  <footer class="cart-foot" id="cartFoot" hidden>
+    <div class="cart-total">
+      <span class="cart-total-label">Итого</span>
+      <span class="cart-total-value"><span id="cartTotal">0</span> сом</span>
+    </div>
+    <button class="btn btn-primary">Оформить заказ</button>
+    <button class="btn btn-ghost" id="continueBtn">Продолжить выбор</button>
+    <div class="cart-safe">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6l8-3Z"/><path d="M9 12l2 2 4-4"/></svg>
+      <span>Безопасная оплата</span>
+    </div>
+  </footer>
+</aside>
+
+<!-- ================== TOAST ================== -->
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="script.js"></script>
+</body>
+</html>
