@@ -388,3 +388,98 @@ function escapeHtml(str){
 /* ---------------------- INIT ---------------------- */
 renderGrid();
 renderCart();
+
+/* =============================================================
+   DISH MODAL — полностью новый блок, существующий код не затронут
+   ============================================================= */
+
+/* ---- Ingredients per dish ---- */
+const dishIngredients = {
+  'salad-avocado':      ['Авокадо', 'Микрозелень', 'Черри томаты', 'Огурец', 'Ореховый соус', 'Лайм'],
+  'salad-caesar':       ['Листья романо', 'Куриная грудка', 'Пармезан', 'Гренки', 'Яйцо', 'Соус Цезарь', 'Лимон'],
+  'salad-greek':        ['Томаты', 'Огурцы', 'Сладкий перец', 'Сыр фета', 'Маслины', 'Оливковое масло', 'Орегано'],
+  'salad-caprese':      ['Моцарелла буффало', 'Томат бычье сердце', 'Базилик', 'Соус песто', 'Оливковое масло', 'Бальзамик'],
+  'main-steak':         ['Говядина рибай 300г', 'Запечённые овощи', 'Молодой картофель', 'Соус деми-глас', 'Розмарин', 'Тимьян'],
+  'main-truffle-pasta': ['Паста тальятелле', 'Чёрный трюфель', 'Сливки 35%', 'Пармезан', 'Чеснок', 'Сливочное масло'],
+  'main-salmon':        ['Филе лосося 200г', 'Овощи гриль', 'Соус из белого вина', 'Каперсы', 'Лимон', 'Свежий укроп'],
+  'main-risotto':       ['Рис арборио', 'Белые грибы', 'Пармезан', 'Белое вино', 'Лук-шалот', 'Трюфельное масло'],
+  'dessert-fondant':    ['Тёмный шоколад 70%', 'Яйца', 'Мука', 'Сливочное масло', 'Сахар', 'Ванильное мороженое'],
+  'dessert-cheesecake': ['Сливочный сыр', 'Печенье', 'Сахар', 'Яйца', 'Сезонные ягоды', 'Ягодный соус', 'Сливки'],
+  'dessert-tiramisu':   ['Маскарпоне', 'Савоярди', 'Эспрессо', 'Яичные желтки', 'Сахар', 'Какао-порошок'],
+  'dessert-brulee':     ['Сливки 35%', 'Яичные желтки', 'Сахар', 'Стручок ванили', 'Карамельная корочка'],
+  'drink-lemonade':     ['Лимон', 'Лайм', 'Свежая мята', 'Тростниковый сироп', 'Газированная вода', 'Лёд'],
+  'drink-mojito':       ['Лайм', 'Свежая мята', 'Тростниковый сахар', 'Содовая вода', 'Лёд'],
+  'drink-juice':        ['Свежие фрукты', 'Апельсин / Яблоко / Грейпфрут', 'Без добавок'],
+  'drink-smoothie':     ['Клубника', 'Малина', 'Банан', 'Натуральный йогурт', 'Мёд', 'Лёд']
+};
+
+/* ---- DOM refs ---- */
+const $dishOverlay = document.getElementById('dishOverlay');
+const $dishModal   = document.getElementById('dishModal');
+const $dishClose   = document.getElementById('dishModalClose');
+const $dishAdd     = document.getElementById('dishModalAdd');
+
+let _modalDishId = null;
+
+/* ---- Open modal ---- */
+function openDishModal(id) {
+  const d = dishes.find(x => x.id === id);
+  if (!d) return;
+  _modalDishId = id;
+
+  /* Fill content */
+  const photo = document.getElementById('dishModalPhoto');
+  photo.src = d.img;
+  photo.alt = d.name;
+  document.getElementById('dishModalCat').textContent   = catNames[d.cat] || '';
+  document.getElementById('dishModalTitle').textContent = d.name;
+  document.getElementById('dishModalPrice').innerHTML   =
+    `${d.price.toLocaleString('ru-RU')} <em>сом</em>`;
+  document.getElementById('dishModalDesc').textContent  = d.desc;
+
+  const ings = dishIngredients[id] || [];
+  document.getElementById('dishModalIngredients').innerHTML =
+    ings.map(i => `<li>${escapeHtml(i)}</li>`).join('');
+
+  /* Show */
+  $dishOverlay.classList.add('is-open');
+  $dishModal.classList.add('is-open');
+  $dishOverlay.setAttribute('aria-hidden', 'false');
+  $dishModal.setAttribute('aria-hidden', 'false');
+  document.body.style.overflow = 'hidden';
+}
+
+/* ---- Close modal ---- */
+function closeDishModal() {
+  $dishOverlay.classList.remove('is-open');
+  $dishModal.classList.remove('is-open');
+  $dishOverlay.setAttribute('aria-hidden', 'true');
+  $dishModal.setAttribute('aria-hidden', 'true');
+  document.body.style.overflow = '';
+  _modalDishId = null;
+}
+
+/* ---- Event listeners ---- */
+$dishClose.addEventListener('click', closeDishModal);
+$dishOverlay.addEventListener('click', closeDishModal);
+
+$dishAdd.addEventListener('click', () => {
+  if (_modalDishId) {
+    addToCart(_modalDishId);   /* вызов существующей функции */
+    closeDishModal();
+  }
+});
+
+/* Escape key (не конфликтует — у корзины своя проверка) */
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && $dishModal.classList.contains('is-open')) closeDishModal();
+});
+
+/* Клик по карточке (не по кнопке +) → открыть модальное окно */
+$grid.addEventListener('click', (e) => {
+  if (e.target.closest('.card-add')) return;   /* кнопка "+" — не открывать */
+  const card = e.target.closest('.card');
+  if (!card) return;
+  const btn = card.querySelector('.card-add');
+  if (btn) openDishModal(btn.dataset.id);
+});

@@ -185,6 +185,46 @@
 <!-- ================== TOAST ================== -->
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
+<!-- ================== DISH MODAL ================== -->
+<div class="dish-overlay" id="dishOverlay" aria-hidden="true"></div>
+
+<div class="dish-modal" id="dishModal" role="dialog" aria-modal="true"
+     aria-labelledby="dishModalTitle" aria-hidden="true">
+
+  <button class="dish-modal-close" id="dishModalClose" aria-label="Закрыть">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+         stroke-linecap="round" stroke-linejoin="round">
+      <path d="M6 6l12 12M18 6L6 18"/>
+    </svg>
+  </button>
+
+  <div class="dish-modal-img">
+    <img id="dishModalPhoto" src="" alt="" loading="lazy">
+    <div class="dish-modal-cat-badge" id="dishModalCat"></div>
+  </div>
+
+  <div class="dish-modal-body">
+    <h2 class="dish-modal-title" id="dishModalTitle"></h2>
+    <div class="dish-modal-price" id="dishModalPrice"></div>
+    <p class="dish-modal-desc" id="dishModalDesc"></p>
+    <div class="dish-modal-section">
+      <span class="dish-modal-section-label">Состав</span>
+      <ul class="dish-modal-ingredients" id="dishModalIngredients"></ul>
+    </div>
+  </div>
+
+  <div class="dish-modal-footer">
+    <button class="btn btn-primary dish-modal-add" id="dishModalAdd">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+           stroke-linecap="round" stroke-linejoin="round">
+        <path d="M5 7h14l-1.5 11a2 2 0 0 1-2 1.7h-7a2 2 0 0 1-2-1.7L5 7Z"/>
+        <path d="M9 7V5a3 3 0 0 1 6 0v2"/>
+      </svg>
+      Добавить в корзину
+    </button>
+  </div>
+</div>
+
 <script src="script.js"></script>
 </body>
 </html>
