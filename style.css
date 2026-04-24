@@ -968,16 +968,22 @@ a{color:inherit;text-decoration:none;}
   .card-add{width:34px;height:34px;}
   .card-add svg{width:16px;height:16px;}
 
-  /* Контрол количества — немного меньше */
-  .card-qty-dec,.card-qty-inc{width:26px;height:26px;font-size:14px;}
-  .card-qty-num{font-size:12px;min-width:18px;}
+  /* Card footer — stack vertically so buttons don't overflow narrow cards */
+  .card-foot{flex-direction:column;align-items:flex-start;gap:8px;margin-top:8px;}
+  .card-foot-actions{width:100%;justify-content:space-between;}
+
+  /* Контрол количества — компактнее чтобы помещался в узкую карточку */
+  .card-qty-ctrl{gap:3px;padding:2px;}
+  .card-qty-dec,.card-qty-inc{width:24px;height:24px;font-size:13px;}
+  .card-qty-num{font-size:12px;min-width:16px;}
 
   /* "Подробнее" компактнее */
-  .card-more{padding:5px 10px;font-size:11px;}
+  .card-foot-actions{gap:6px;}
+  .card-more{padding:5px 9px;font-size:11px;}
 }
 
 /* ---------- Very small phones ---------- */
-@media (max-width:420px){
+@media (max-width:430px){
   .grid{grid-template-columns:1fr; gap:16px;}
   .dish-section-grid{grid-template-columns:1fr;}
   .card-media{aspect-ratio:16/10;}
