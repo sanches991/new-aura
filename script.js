@@ -146,6 +146,7 @@ const dishes = [
 /* ---------------------- STATE ---------------------- */
 const state = {
   activeCat: 'all',
+  search: '',          /* текущий поисковый запрос */
   /** cart: { [dishId]: qty } */
   cart: {}
 };
@@ -192,9 +193,22 @@ function cardHTML(d, i) {
         <p class="card-desc">${escapeHtml(d.desc)}</p>
         <div class="card-foot">
           <div class="card-price">${d.price} <em>сом</em></div>
-          <button class="card-add" data-id="${d.id}" aria-label="Добавить ${escapeHtml(d.name)} в корзину">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
-          </button>
+          <!-- Кнопка "Подробнее" и контрол кол-ва — в одной строке с ценой -->
+          <div class="card-foot-actions">
+            <button class="card-more" data-id="${d.id}" aria-label="Подробнее о ${escapeHtml(d.name)}">
+              Подробнее
+            </button>
+            <!-- Контрол количества (отображается когда qty > 0) -->
+            <div class="card-qty-ctrl" id="qty-ctrl-${d.id}">
+              <button class="card-qty-dec" data-id="${d.id}" aria-label="Убавить количество">−</button>
+              <span class="card-qty-num" id="qty-num-${d.id}">0</span>
+              <button class="card-qty-inc" data-id="${d.id}" aria-label="Прибавить количество">+</button>
+            </div>
+            <!-- Кнопка "+" (скрывается когда qty > 0) -->
+            <button class="card-add" data-id="${d.id}" aria-label="Добавить ${escapeHtml(d.name)} в корзину">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+            </button>
+          </div>
         </div>
       </div>
     </article>
@@ -204,10 +218,39 @@ function cardHTML(d, i) {
 /* ---------------------- RENDER GRID ---------------------- */
 function renderGrid(){
   const isAll = state.activeCat === 'all';
+  const term  = state.search.toLowerCase().trim(); /* поисковый запрос */
+
+  /* Совпадение по названию или описанию блюда */
+  const matchSearch = d => !term ||
+    d.name.toLowerCase().includes(term) ||
+    d.desc.toLowerCase().includes(term);
 
   $grid.style.opacity = 0;
   setTimeout(() => {
-    if(isAll){
+    /* Если активен поиск — показываем плоскую сетку с результатами */
+    if (term) {
+      $grid.classList.remove('grid--sections');
+      const results = dishes.filter(d =>
+        matchSearch(d) && (isAll || d.cat === state.activeCat)
+      );
+      if (!results.length) {
+        $grid.innerHTML = `
+          <div class="grid-empty">
+            <div class="grid-empty-icon">
+              <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.3"
+                   stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="22" cy="22" r="14"/><path d="m32 32 10 10"/>
+                <path d="M18 22h8M22 18v8" opacity=".4"/>
+              </svg>
+            </div>
+            <p>Ничего не найдено</p>
+            <span>Попробуйте другой запрос</span>
+          </div>`;
+      } else {
+        $grid.innerHTML = results.map((d, i) => cardHTML(d, i)).join('');
+      }
+    } else if(isAll){
+      /* Все категории без поиска — оригинальный сгруппированный вид */
       $grid.classList.add('grid--sections');
       $grid.innerHTML = catOrder.map(cat => {
         const items = dishes.filter(d => d.cat === cat);
@@ -223,12 +266,14 @@ function renderGrid(){
         </div>`;
       }).join('');
     } else {
+      /* Конкретная категория без поиска — плоская сетка */
       $grid.classList.remove('grid--sections');
       const list = dishes.filter(d => d.cat === state.activeCat);
       $grid.innerHTML = list.map((d, i) => cardHTML(d, i)).join('');
     }
     $grid.style.opacity = 1;
     bindAddButtons();
+    updateCardQtyDisplays(); /* восстановить счётчики после перерисовки */
   }, 140);
 }
 
@@ -299,6 +344,7 @@ function renderCart(){
     $cartEmpty.style.display = 'flex';
     $cartBody.querySelectorAll('.cart-item').forEach(el => el.remove());
     $cartFoot.hidden = true;
+    updateCardQtyDisplays(); /* сбросить все счётчики на карточках */
     return;
   }
   $cartEmpty.style.display = 'none';
@@ -340,6 +386,8 @@ function renderCart(){
     row.querySelector('[data-action="inc"]').addEventListener('click', () => changeQty(id, +1));
     row.querySelector('[data-action="remove"]').addEventListener('click', () => removeFromCart(id));
   });
+
+  updateCardQtyDisplays(); /* синхронизировать счётчики на карточках с корзиной */
 }
 
 /* ---------------------- CART PANEL TOGGLE ---------------------- */
@@ -475,11 +523,145 @@ document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape' && $dishModal.classList.contains('is-open')) closeDishModal();
 });
 
-/* Клик по карточке (не по кнопке +) → открыть модальное окно */
+/* Клик по карточке — делегирование всех действий */
 $grid.addEventListener('click', (e) => {
-  if (e.target.closest('.card-add')) return;   /* кнопка "+" — не открывать */
+  /* Кнопка "−" — убавить количество в корзине */
+  const decBtn = e.target.closest('.card-qty-dec');
+  if (decBtn) { changeQty(decBtn.dataset.id, -1); return; }
+
+  /* Кнопка "+" контрола — добавить ещё одну единицу */
+  const incBtn = e.target.closest('.card-qty-inc');
+  if (incBtn) { addToCart(incBtn.dataset.id); return; }
+
+  /* Кнопка "Подробнее" — открыть модал с составом */
+  const moreBtn = e.target.closest('.card-more');
+  if (moreBtn) { openDishModal(moreBtn.dataset.id); return; }
+
+  /* Кнопка "+" (первое добавление) — не открывать модал */
+  if (e.target.closest('.card-add')) return;
+
+  /* Клик по карточке (не по кнопкам) → открыть модальное окно */
   const card = e.target.closest('.card');
   if (!card) return;
-  const btn = card.querySelector('.card-add');
+  const btn = card.querySelector('.card-add[data-id]');
   if (btn) openDishModal(btn.dataset.id);
 });
+
+/* =============================================================
+   НОВЫЕ ФУНКЦИИ
+   ============================================================= */
+
+/* --- Синхронизировать счётчики количества на карточках с корзиной --- */
+function updateCardQtyDisplays() {
+  dishes.forEach(d => {
+    const ctrl   = document.getElementById(`qty-ctrl-${d.id}`);
+    const numEl  = document.getElementById(`qty-num-${d.id}`);
+    const addBtn = $grid.querySelector(`.card-add[data-id="${d.id}"]`);
+    if (!ctrl) return; /* карточка ещё не отрендерена */
+    const qty = state.cart[d.id] || 0;
+    if (qty > 0) {
+      ctrl.style.display   = 'flex';
+      if (addBtn) addBtn.style.display = 'none';
+      if (numEl)  numEl.textContent    = qty;
+    } else {
+      ctrl.style.display   = 'none';
+      if (addBtn) addBtn.style.display = '';
+    }
+  });
+}
+
+/* --- Показать количество блюд рядом с каждой категорией в сайдбаре --- */
+function updateCatCounts() {
+  $navItems.forEach(btn => {
+    const cat = btn.dataset.category;
+    if (cat === 'all') return; /* "Все блюда" — без счётчика */
+    const count = dishes.filter(d => d.cat === cat).length;
+    let badge = btn.querySelector('.nav-count');
+    if (!badge) {
+      badge = document.createElement('span');
+      badge.className = 'nav-count';
+      btn.appendChild(badge);
+    }
+    badge.textContent = count;
+  });
+}
+
+/* --- Поиск в реальном времени --- */
+const $searchInput = document.getElementById('searchInput');
+const $searchClear = document.getElementById('searchClear');
+
+if ($searchInput) {
+  $searchInput.addEventListener('input', () => {
+    state.search = $searchInput.value;
+    /* Показать/скрыть кнопку очистки */
+    if ($searchClear) $searchClear.hidden = !state.search;
+    renderGrid();
+  });
+}
+
+if ($searchClear) {
+  $searchClear.addEventListener('click', () => {
+    $searchInput.value = '';
+    state.search = '';
+    $searchClear.hidden = true;
+    $searchInput.focus();
+    renderGrid();
+  });
+}
+
+/* --- Инициализация счётчиков категорий --- */
+updateCatCounts();
+
+/* =============================================================
+   МОБИЛЬНЫЙ ПОИСК — раскрывающаяся строка под хедером
+   ============================================================= */
+
+const $mobileSearchBtn   = document.getElementById('mobileSearchBtn');
+const $mobileSearchBar   = document.getElementById('mobileSearchBar');
+const $mobileSearchInput = document.getElementById('mobileSearchInput');
+const $mobileSearchClear = document.getElementById('mobileSearchClear');
+
+/* Переключатель видимости мобильной строки поиска */
+if ($mobileSearchBtn) {
+  $mobileSearchBtn.addEventListener('click', () => {
+    const isOpen = $mobileSearchBar.classList.toggle('is-open');
+    $mobileSearchBar.setAttribute('aria-hidden', String(!isOpen));
+    $mobileSearchBtn.classList.toggle('is-active', isOpen);
+    document.body.classList.toggle('mobile-search-open', isOpen);
+    if (isOpen) {
+      /* Небольшая задержка — дать анимации развернуться */
+      setTimeout(() => $mobileSearchInput && $mobileSearchInput.focus(), 160);
+    } else {
+      /* Закрытие — сбросить запрос */
+      if ($mobileSearchInput) $mobileSearchInput.value = '';
+      state.search = '';
+      if ($mobileSearchClear) $mobileSearchClear.hidden = true;
+      renderGrid();
+    }
+  });
+}
+
+/* Поиск из мобильного поля — синхронизируется с тем же state.search */
+if ($mobileSearchInput) {
+  $mobileSearchInput.addEventListener('input', () => {
+    state.search = $mobileSearchInput.value;
+    if ($mobileSearchClear) $mobileSearchClear.hidden = !state.search;
+    /* Синхронизировать с десктопным полем */
+    const $di = document.getElementById('searchInput');
+    if ($di) $di.value = state.search;
+    renderGrid();
+  });
+}
+
+if ($mobileSearchClear) {
+  $mobileSearchClear.addEventListener('click', () => {
+    if ($mobileSearchInput) $mobileSearchInput.value = '';
+    state.search = '';
+    $mobileSearchClear.hidden = true;
+    if ($mobileSearchInput) $mobileSearchInput.focus();
+    /* Синхронизировать с десктопным полем */
+    const $di = document.getElementById('searchInput');
+    if ($di) $di.value = '';
+    renderGrid();
+  });
+}

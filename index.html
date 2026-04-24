@@ -67,10 +67,16 @@
           </span>
           <span class="nav-label">Напитки</span>
         </button>
+
+        <!-- Кнопка "Ознакомление" — переход на страницу info.html -->
+        <a href="info.html" class="nav-item nav-item--info">
+          <span class="nav-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h.01"/></svg>
+          </span>
+          <span class="nav-label">Ознакомление</span>
+        </a>
       </nav>
-      <div class="hours">
-        
-      </div>
+
       <!-- Working hours -->
       <div class="hours">
         <img src="iconFolder/Icon black.svg" style="color: blackE; width: 40px;margin-bottom: 15px;" alt="">
@@ -89,16 +95,43 @@
   </aside>
 
   <!-- ================== MOBILE TOP BAR ================== -->
-  <header class="mobile-bar">
+  <header class="mobile-bar" id="mobileBar">
     <div class="mobile-logo">
       <div class="logo-word">AURA</div>
       <div class="logo-sub">— FINE DINING —</div>
     </div>
-    <button class="mobile-cart-btn" id="mobileCartBtn" aria-label="Корзина">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 7h14l-1.5 11a2 2 0 0 1-2 1.7h-7a2 2 0 0 1-2-1.7L5 7Z"/><path d="M9 7V5a3 3 0 0 1 6 0v2"/></svg>
-      <span class="mobile-cart-badge" id="mobileCartBadge">0</span>
-    </button>
+    <div class="mobile-actions">
+      <!-- Кнопка поиска: раскрывает строку поиска -->
+      <button class="mobile-search-btn" id="mobileSearchBtn" aria-label="Поиск">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+             stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="7"/><path d="m16.5 16.5 4 4"/>
+        </svg>
+      </button>
+      <button class="mobile-cart-btn" id="mobileCartBtn" aria-label="Корзина">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 7h14l-1.5 11a2 2 0 0 1-2 1.7h-7a2 2 0 0 1-2-1.7L5 7Z"/><path d="M9 7V5a3 3 0 0 1 6 0v2"/></svg>
+        <span class="mobile-cart-badge" id="mobileCartBadge">0</span>
+      </button>
+    </div>
   </header>
+
+  <!-- Выдвижная строка поиска под мобильным хедером -->
+  <div class="mobile-search-bar" id="mobileSearchBar" aria-hidden="true">
+    <div class="search-box">
+      <span class="search-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+             stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="7"/><path d="m16.5 16.5 4 4"/>
+        </svg>
+      </span>
+      <input class="search-input" id="mobileSearchInput" type="search"
+             placeholder="Поиск по блюдам..." autocomplete="off" aria-label="Поиск">
+      <button class="search-clear" id="mobileSearchClear" aria-label="Закрыть поиск" hidden>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+             stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+    </div>
+  </div>
 
   <!-- ================== MAIN ================== -->
   <main class="main">
@@ -106,24 +139,44 @@
     <div class="herbs" aria-hidden="true"></div>
 
     <div class="main-inner">
-      <!-- Header row: title + cart pill -->
+      <!-- Header row: title + search + cart pill -->
       <header class="main-head">
         <div class="title-block">
           <h1 class="title">Меню</h1>
-          <div class="title-flourish" aria-hidden="true" >
+          <div class="title-flourish" aria-hidden="true">
             <img width="50px" height="30px" src="iconFolder/Icon.svg" alt="">
             <hr>
           </div>
           <p class="subtitle">Изысканные блюда для истинных гурманов</p>
         </div>
 
-        <button class="cart-pill" id="cartPill" aria-label="Открыть корзину">
+        <div class="main-head-right">
+          <!-- Поисковая строка (в хедере, рядом с корзиной) -->
+          <div class="head-search">
+            <div class="search-box">
+              <span class="search-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                     stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="11" cy="11" r="7"/><path d="m16.5 16.5 4 4"/>
+                </svg>
+              </span>
+              <input class="search-input" id="searchInput" type="search"
+                     placeholder="Поиск по блюдам..." autocomplete="off" aria-label="Поиск по блюдам">
+              <button class="search-clear" id="searchClear" aria-label="Очистить поиск" hidden>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                     stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <button class="cart-pill" id="cartPill" aria-label="Открыть корзину">
           <span class="cart-pill-icon" aria-hidden="true">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 7h14l-1.5 11a2 2 0 0 1-2 1.7h-7a2 2 0 0 1-2-1.7L5 7Z"/><path d="M9 7V5a3 3 0 0 1 6 0v2"/></svg>
           </span>
           <span class="cart-pill-label">Корзина</span>
           <span class="cart-pill-badge" id="cartPillBadge">0</span>
-        </button>
+          </button>
+        </div><!-- /.main-head-right -->
       </header>
 
       <!-- Horizontal category bar (mobile fixed) -->
@@ -135,6 +188,14 @@
           <button class="cat-chip" data-category="mains">Основные блюда</button>
           <button class="cat-chip" data-category="desserts">Десерты</button>
           <button class="cat-chip" data-category="drinks">Напитки</button>
+          <!-- Кнопка ознакомления в мобильных чипах -->
+          <a href="info.html" class="cat-chip cat-chip--info">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                 stroke-linecap="round" stroke-linejoin="round" width="13" height="13">
+              <circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h.01"/>
+            </svg>
+            Ознакомление
+          </a>
         </nav>
       </div>
 
